@@ -67,8 +67,12 @@
         try {
             const res = await fetch('/chat/ask?question=' + encodeURIComponent(question));
             if (!res.ok) throw new Error('HTTP ' + res.status);
-            const md = await res.text();
-            out.innerHTML = marked.parse(md);
+            const json = await res.json();
+            if (json.code !== 0) throw new Error(json.message);
+            out.innerHTML = marked.parse(json.data.answer);
+
+
+
         } catch (e) {
             out.innerHTML = '<p style="color:#cf222e">请求失败：' + e.message + '</p>';
         } finally {

@@ -5,13 +5,13 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/simple_ai?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
-    username: root//这里填本机的用户名，例如：root
-    password: 123456//这里填本机的密码，例如：123456
+    username: root
+    password: 123456
 
   ai:
     openai:
       # 从环境变量读取，禁止硬编码。本地开发在 IDEA 运行配置里设置 DEEPSEEK_API_KEY
-      api-key: ${DEEPSEEK_API_KEY}//这里填DeepSeek的API Key
+      api-key: ${DEEPSEEK_API_KEY}
       base-url: "https://api.deepseek.com"
       chat:
         options:
