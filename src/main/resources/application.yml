@@ -8,6 +8,11 @@ spring:
     username: root
     password: 123456
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   ai:
     openai:
       # 从环境变量读取，禁止硬编码。本地开发在 IDEA 运行配置里设置 DEEPSEEK_API_KEY
