@@ -19,8 +19,10 @@ export default defineConfig({
     port: 3000,
     proxy: {
       // 开发时把接口请求转发到 Spring Boot，避免跨域
+      // 注意：新增后端接口路径时，这里要同步加一条
       '/chat': { target: 'http://localhost:8080', changeOrigin: true },
       '/doc': { target: 'http://localhost:8080', changeOrigin: true },
+      '/auth': { target: 'http://localhost:8080', changeOrigin: true },
     },
   },
 
