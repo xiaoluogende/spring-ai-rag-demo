@@ -10,7 +10,6 @@ import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.LinkedHashMap;
@@ -18,7 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+/**
+ * 由 {@link com.simpleai.demo.config.RagConfiguration} 装配，
+ * 不在类上标 @Service —— 组件扫描不处理 @ConditionalOnProperty，
+ * 只有通过 @Bean 方法创建才能受 app.rag.enabled 控制。
+ */
 public class RagServiceImpl implements RagService {
 
     private final ChatClient chatClient;

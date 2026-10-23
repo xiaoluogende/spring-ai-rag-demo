@@ -2,6 +2,12 @@ server:
   port: 8080
 
 spring:
+  # 排除 Chroma 自动配置：改由 RagConfiguration 手动装配。
+  # 这样既能受 app.rag.enabled 控制，也绕开了 Spring AI 1.1.0 的建表 bug
+  autoconfigure:
+    exclude:
+      - org.springframework.ai.vectorstore.chroma.autoconfigure.ChromaVectorStoreAutoConfiguration
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/simple_ai?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
@@ -31,7 +37,6 @@ spring:
         tenant-name: SpringAiTenant
         database-name: SpringAiDatabase
         collection-name: simple-ai-docs
-        initialize-schema: true
 app:
   embedding:
     # 注意：不要带 /v1。Spring AI 内部会拼上 /v1/embeddings，带了就变成 /v1/v1/embeddings
@@ -39,8 +44,11 @@ app:
     api-key: ${DASHSCOPE_API_KEY}
     model: text-embedding-v3
   rag:
+    # 总开关：false 时整个 RAG 模块不加载（不创建 EmbeddingModel / VectorStore，
+    # 也不要求 Chroma 和百炼 Key 存在），普通对话 /chat/ask 仍可正常使用
+    enabled: true
     top-k: 4
-    # collection 已改为 cosine 度量，score 即余弦相似度
+    # collection 使用 cosine 度量，score 即余弦相似度
     # 0.6 约等于"明确相关"的下限，实测后按需调整
     similarity-threshold: 0.6
 
@@ -54,3 +62,12 @@ mybatis-plus:
 logging:
   level:
     org.springframework.web.client: DEBUG
+
+# Sa-Token 认证配置
+sa-token:
+  token-name: satoken      # 前端请求头里带这个字段
+  timeout: 2592000         # 有效期 30 天（秒）
+  is-concurrent: true      # 允许同一账号多端登录
+  is-share: false          # 每次登录签发新 token
+  token-style: uuid
+  is-log: false            # 关掉 Sa-Token 自身日志，避免刷屏

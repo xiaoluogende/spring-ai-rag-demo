@@ -4,13 +4,15 @@ import com.simpleai.demo.service.DocumentService;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Service
+/**
+ * 由 {@link com.simpleai.demo.config.RagConfiguration} 装配，
+ * 不标 @Service，以便受 app.rag.enabled 控制。
+ */
 public class DocumentServiceImpl implements DocumentService {
 
     /** 百炼 embedding 单次最多 10 条文本 */
