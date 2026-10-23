@@ -1,8 +1,26 @@
+# ---------- 构建产物 ----------
 HELP.md
 target/
-.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+**/.mvn/wrapper/maven-wrapper.jar
+
+# ---------- 本地工具数据 ----------
+.workbuddy-ai/
+
+# ---------- 前端 ----------
+node_modules/
+**/dist/
+
+# ---------- IDE ----------
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
 
 ### STS ###
 .apt_generated
@@ -13,21 +31,15 @@ target/
 .springBeans
 .sts4-cache
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-
 ### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+**/nbproject/private/
+**/nbbuild/
+**/nbdist/
+**/.nb-gradle/
 
 ### VS Code ###
 .vscode/
+
+# ---------- 系统 ----------
+.DS_Store
+Thumbs.db
