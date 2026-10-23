@@ -1,8 +1,12 @@
 <script setup>
 import { ref, watch } from 'vue'
+import { Upload } from '@element-plus/icons-vue'
 import ChatPanel from './components/ChatPanel.vue'
+import UploadDialog from './components/UploadDialog.vue'
 
 const mode = ref(localStorage.getItem('chat-mode') || 'rag')
+const uploadVisible = ref(false)
+
 watch(mode, (v) => localStorage.setItem('chat-mode', v))
 
 const modeOptions = [
@@ -19,10 +23,16 @@ const modeOptions = [
         <span class="title">Simple AI</span>
         <span class="subtitle">Spring AI · Chroma · RAG</span>
       </div>
-      <el-segmented v-model="mode" :options="modeOptions" />
+
+      <div class="actions">
+        <el-segmented v-model="mode" :options="modeOptions" />
+        <el-button :icon="Upload" @click="uploadVisible = true">上传文档</el-button>
+      </div>
     </header>
 
     <ChatPanel :mode="mode" />
+
+    <UploadDialog v-model="uploadVisible" />
   </div>
 </template>
 
@@ -70,6 +80,12 @@ const modeOptions = [
 .subtitle {
   font-size: 12px;
   color: #9aa4b2;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 @media (max-width: 640px) {

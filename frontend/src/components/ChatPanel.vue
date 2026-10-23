@@ -1,7 +1,10 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { BubbleList, XSender } from 'vue-element-plus-x'
 import { askQuestion, askRag } from '../api/chat'
+import AnswerContent from './AnswerContent.vue'
+import ReferenceList from './ReferenceList.vue'
+import RetrievalTrace from './RetrievalTrace.vue'
 
 const props = defineProps({
   mode: { type: String, default: 'rag' },
@@ -26,13 +29,15 @@ async function send(question) {
 
   const stamp = Date.now()
   const userMsg = { id: `u-${stamp}`, placement: 'end', content: question }
-  const aiMsg = {
+  // 必须用 reactive 包装：
+  // push 进 ref 数组后，数组里存的是代理对象；直接改原始对象不经过 Proxy，视图不会更新
+  const aiMsg = reactive({
     id: `a-${stamp}`,
     placement: 'start',
     content: '',
     loading: true,
     mode: props.mode,
-  }
+  })
   messages.value.push(userMsg, aiMsg)
   loading.value = true
 
@@ -75,7 +80,32 @@ function onSubmit() {
     </div>
 
     <div v-else class="messages">
-      <BubbleList :list="messages" max-height="100%" />
+      <BubbleList :list="messages" max-height="100%">
+        <template #content="{ item }">
+          <AnswerContent :item="item" />
+        </template>
+        <template #footer="{ item }">
+          <div v-if="item.placement === 'start'" class="meta">
+            <RetrievalTrace
+              v-if="item.mode === 'rag'"
+              :references="item.references || []"
+              :loading="item.loading"
+              :cost-ms="item.costMs"
+              :mode="item.mode"
+            />
+            <ReferenceList
+              v-if="item.mode === 'rag'"
+              :references="item.references || []"
+              :loading="item.loading"
+              :cost-ms="item.costMs"
+              :mode="item.mode"
+            />
+            <div v-if="item.costMs" class="cost">
+              <el-tag size="small" type="info" round>耗时 {{ item.costMs }} ms</el-tag>
+            </div>
+          </div>
+        </template>
+      </BubbleList>
     </div>
 
     <div class="composer">
@@ -134,6 +164,14 @@ function onSubmit() {
   min-height: 0;
   overflow: hidden;
   padding: 20px;
+}
+
+.meta {
+  margin-top: 8px;
+}
+
+.cost {
+  margin-top: 8px;
 }
 
 .composer {
